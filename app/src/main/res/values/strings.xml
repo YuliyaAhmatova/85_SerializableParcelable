@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">85_SerializableParcelable</string>
+    <string name="name">Имя</string>
+    <string name="second_name">Фамилия</string>
+    <string name="address">Адрес</string>
+    <string name="phone">Телефон</string>
+    <string name="save">Сохранить</string>
+    <string name="book">Книга адресов</string>
+</resources>
