@@ -11,11 +11,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 
 class MainActivity : AppCompatActivity() {
 
-    private val persons: MutableList<Person> = mutableListOf()
+    private lateinit var userViewModel: UserViewModel
 
+    private lateinit var adapter: ArrayAdapter<Person>
     private lateinit var nameET: EditText
     private lateinit var secondNameET: EditText
     private lateinit var addressET: EditText
@@ -33,6 +35,8 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
+
         nameET = findViewById(R.id.nameET)
         secondNameET = findViewById(R.id.secondNameET)
         addressET = findViewById(R.id.addressET)
@@ -40,8 +44,14 @@ class MainActivity : AppCompatActivity() {
         saveBTN = findViewById(R.id.saveBTN)
 
         listViewLV = findViewById(R.id.listViewLV)
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, persons)
+        adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, mutableListOf())
         listViewLV.adapter = adapter
+
+        userViewModel.persons.observe(this) { persons ->
+            adapter.clear()
+            adapter.addAll(persons)
+            adapter.notifyDataSetChanged()
+        }
 
         saveBTN.setOnClickListener {
             val person = Person(
@@ -50,8 +60,8 @@ class MainActivity : AppCompatActivity() {
                 addressET.text.toString(),
                 phoneET.text.toString()
             )
-            persons.add(person)
-            adapter.notifyDataSetChanged()
+            userViewModel.persons.value?.add(person)
+            userViewModel.persons.postValue(userViewModel.persons.value)
             nameET.text.clear()
             secondNameET.text.clear()
             addressET.text.clear()
